@@ -1,68 +1,3 @@
-# Diyanet İçerik Scraper
-
-**Diyanet İçerik Scraper**, Diyanet'in dijital kitap koleksiyonlarından verileri çekip bir PostgreSQL veritabanına kaydeden bir Python uygulamasıdır. Bu proje, Diyanet'in e-kitap ve yayınlarını ("https://yayin.diyanet.gov.tr/Product/Index?&fileType=1") toplamak ve depolamak için kullanılabilir. 
-
-## Proje Yapısı
-
-Bu proje, iki ana bileşenden oluşmaktadır:
-
-1. **PostgreSQL Veritabanı**: İçerik verilerini depolamak için kullanılan veritabanı.
-2. **Python Scraper**: API'den verileri çeker, işler ve PostgreSQL veritabanına kaydeder.
-
-Her iki bileşen de Docker konteynerlerinde çalışır ve Docker Compose kullanılarak yönetilir.
-
-## Gereksinimler
-
-- Docker
-- Docker Compose
-- Python 3.9 (Proje için kullanılan Python sürümü)
-- PostgreSQL
-
-## Kurulum ve Çalıştırma
-
-### 1. **PostgreSQL Veritabanı Kurulumu**
-
-1. **Docker Compose ile PostgreSQL konteynerini başlatın**:
-    ```bash
-    cd db
-    docker compose up --build -d
-    ```
-
-   Bu komut, PostgreSQL veritabanı konteynerini başlatır ve `init.sql` dosyasındaki SQL komutları ile veritabanını oluşturur.
-
-2. **Veritabanı bağlantı bilgilerini `.env` dosyasından düzenleyin**:
-    - `POSTGRES_USER` — PostgreSQL kullanıcı adı
-    - `POSTGRES_PASSWORD` — PostgreSQL şifresi
-    - `POSTGRES_DB` — Veritabanı adı
-    - `DB_PORT` — Dışa açılacak port (varsayılan `5432`)
-
-   `.env` dosyasını açıp uygun değerleri girin.
-
-### 2. **Python Scraper Kurulumu**
-
-1. **Python scraper'ı çalıştırmak için Docker Compose ile başlatın**:
-    ```bash
-    cd scraper
-    docker compose up --build -d
-    ```
-
-   Bu komut, Python scraper konteynerini başlatır ve verileri çekip PostgreSQL veritabanına kaydeder.
-
-2. **Python scraper'ı için bağlantı bilgilerini `.env` dosyasından düzenleyin**:
-    - `POSTGRES_USER` — PostgreSQL kullanıcı adı
-    - `POSTGRES_PASSWORD` — PostgreSQL şifresi
-    - `POSTGRES_DB` — Veritabanı adı
-    - `DB_PORT` — PostgreSQL portu (kendi `.env` dosyanızdaki ayarlarla uyumlu olmalı)
-    - `DB_HOST` — Host adı
-    
-
-   `.env` dosyasını açıp uygun değerleri girin.
-
-### 3. **Veritabanı Yapılandırması**
-
-PostgreSQL veritabanı için aşağıdaki tablo yapısı `init.sql` dosyasına eklenmiştir:
-
-```sql
 CREATE TABLE IF NOT EXISTS diyanet_icerik (             
     id SERIAL PRIMARY KEY,                                          -- Veritabanındaki artan id
     "icerikId" INT,                                                  -- Response'dan gelen id değeri burada kaydedilecek
@@ -101,4 +36,3 @@ CREATE TABLE IF NOT EXISTS category (
     "categoryId" INT UNIQUE,
     "categoryName" TEXT
 );
-

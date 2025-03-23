@@ -1,0 +1,35 @@
+select COUNT(*) from diyanet_icerik di ;
+select * from diyanet_icerik di where di."icerikId" = 402;
+
+
+select* from category c ;
+
+
+SELECT "fileType", COUNT(*) AS count
+FROM diyanet_icerik
+GROUP BY "fileType"
+ORDER BY "fileType";
+
+
+
+
+SELECT COUNT(*) AS distinct_group_count
+FROM (
+  SELECT DISTINCT "categoryId", "categoryName"
+  FROM diyanet_icerik
+  WHERE "fileType" = 'epub'
+) AS sub;
+
+
+SELECT 
+    "categoryId", 
+    "categoryName", 
+    COUNT(*) AS total,
+    CASE 
+        WHEN COUNT(*) = 1 THEN MAX("icerikId")::text
+        ELSE string_agg("icerikId"::text, ', ')
+    END AS "icerikIds"
+FROM diyanet_icerik
+WHERE "fileType" = 'epub'
+GROUP BY "categoryId", "categoryName";
+
